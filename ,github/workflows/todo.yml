@@ -1,4 +1,4 @@
-name: todo
+name: Todo
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
  
 
 jobs:
-  Todo:
+  todo:
     runs-on: ubuntu-latestgit 
     steps:
     - uses: actions/checkout@v2
