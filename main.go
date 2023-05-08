@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var err error
+//var err error
 
 func main() {
 	//this func creates a new table in the configuration. This table can be used to store data related to
