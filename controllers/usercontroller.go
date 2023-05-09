@@ -24,7 +24,7 @@ func RegisterUser(context *gin.Context) {
 	json.Unmarshal(decryptedData.([]byte), &user)
 
 	//connect to db
-	db := Config.ConnectToDB()
+	db := config.ConnectToDB()
 	defer db.Close()
 	//insert user data into table
 	_, err := db.Query("insert into users(Name, Username, Email, Password) values(?,?,?,?)", user.Name, user.Username, user.Email, user.Password)

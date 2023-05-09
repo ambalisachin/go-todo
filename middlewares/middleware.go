@@ -27,7 +27,7 @@ func DecryptRequest() gin.HandlerFunc {
 		//decrypt data that has been encrypted using AES encryption. The data which is encrypted is passed as 1st argument to the Controllers.
 		//AESDecrypt func & 2nd argument is a byte slice containing the encryption key, which has been retrieved from the request header with the "x-key" key.
 		//3rd argument is the IV, which has been retrieved from the request header with the "x-iv" key. The decrypted data is stored in the decryptedText variable.
-		decryptedText := Controllers.AESDecrypt(encryptedData, []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
+		decryptedText := controllers.AESDecrypt(encryptedData, []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
 		fmt.Println("\n decrypted data:", string(decryptedText))
 
 		//Setting a value to the context variable "decryptedText" with the value of the variable "decryptedText".
