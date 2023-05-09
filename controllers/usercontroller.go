@@ -11,7 +11,7 @@ import (
 )
 
 func RegisterUser(context *gin.Context) {
-	var user models.User
+	var user models.user
 	//retrieve the value stored in the "decryptedText" key in the context. If the key is present, it will assign the value stored in the key to the variable decryptedData &
 	//set the boolean variable exists to true. If the key is not present, then decryptedData will be set to its zero value and exists will be set to false.
 	decryptedData, exists := context.Get("decryptedText")
