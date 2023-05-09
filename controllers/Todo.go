@@ -14,7 +14,7 @@ import (
 
 func GetTodos(c *gin.Context) {
 	
-	var todos []models.todo
+	var todos []models.Todo
 	
 	
 	db := config.ConnectToDB()
@@ -45,7 +45,7 @@ func GetTodos(c *gin.Context) {
 func CreateATodo(c *gin.Context) {
 	//The var "todo" is of type Models.Todo, which is a type defined in the Models package.
 	//This variable can be used to store data related to a Todo type, such as its title, description, and completion status.
-	var todo models.todo
+	var todo models.Todo
 	decryptedData, exists := c.Get("decryptedText")
 	if !exists {
 		c.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
@@ -70,7 +70,7 @@ func GetATodo(c *gin.Context) {
 	//assign the value of the "id" parameter from the "c" object to a var called "id"."c" object is assumed to be an instance of a type that provides access to the "Params" object.
 	//The "Params" object is assumed to have a method called "ByName" which takes a parameter and returns the value of the corresponding parameter from the "c" object.
 	id := c.Params.ByName("id")
-	var todo models.todo
+	var todo models.Todo
 	db := config.ConnectToDB()
 	defer db.Close()
 	row, err := db.Query("SELECT * FROM todo where ID=?", id)
@@ -92,7 +92,7 @@ func GetATodo(c *gin.Context) {
 
 func UpdateATodo(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var todo models.todo
+	var todo models.Todo
 	decryptedData, exists := c.Get("decryptedText")
 	if !exists {
 		c.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
