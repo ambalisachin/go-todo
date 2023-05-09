@@ -6,13 +6,13 @@ import (
 	
 )
 
-type Todo struct {
+type todo struct {
 	ID          uint   `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-type User struct {
+type user struct {
 	gorm.Model
 	Name     string `json:"name"`
 	Username string `json:"username" gorm:"unique"`
