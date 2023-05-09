@@ -2,7 +2,7 @@ package routes
 
 import (
 	"go-todo-app/controllers"
-	middleware "go-todo-app/middlewares"
+	"go-todo-app/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,24 +23,24 @@ func SetupRouter() *gin.Engine {
 	// The middleware will also ensure that all requests are correctly authenticated and authorized, preventing unauthorized access to sensitive data.
 	add.Use(middleware.DecryptRequest())
 	{
-		add.POST("todo", Controllers.CreateATodo)
-		add.POST("/user/register", Controllers.RegisterUser)
-		add.PUT("todo/:id", Controllers.UpdateATodo)
-		v1.GET("todo", Controllers.GetTodos)
-		v1.GET("todo/:id", Controllers.GetATodo)
-		v1.DELETE("todo/:id", Controllers.DeleteATodo)
-		v1.POST("/token", Controllers.Login)
+		add.POST("todo", controllers.CreateATodo)
+		add.POST("/user/register", controllers.RegisterUser)
+		add.PUT("todo/:id", controllers.UpdateATodo)
+		v1.GET("todo", controllers.GetTodos)
+		v1.GET("todo/:id", controllers.GetATodo)
+		v1.DELETE("todo/:id", controllers.DeleteATodo)
+		v1.POST("/token", controllers.Login)
 
 		secured := v1.Group("/secured")
 		{
-			secured.GET("/ping", Controllers.Ping)
+			secured.GET("/ping", controllers.Ping)
 		}
 	}
 	//creates a route group called "encrypt" with the path of "/data". Any routes within the encrypt route group will have the path prefix of "/data".
 	encrypt := r.Group("/data")
 	{
-		encrypt.POST("encrypt", Controllers.EncryptDataHandler)
-		encrypt.POST("decrypt", Controllers.DecryptDataHandler)
+		encrypt.POST("encrypt", controllers.EncryptDataHandler)
+		encrypt.POST("decrypt", controllers.DecryptDataHandler)
 	}
 	return r
 }

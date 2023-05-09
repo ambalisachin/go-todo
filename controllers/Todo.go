@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"go-todo-app/config"
-	"go-todo-app/Models"
+	"go-todo-app/models"
 
 	"github.com/gin-gonic/gin"
 )
