@@ -14,10 +14,10 @@ import (
 
 func GetTodos(c *gin.Context) {
 	//creates an empty slice of type Models.Todo. The variable todos is a pointer to the slice & can be used to reference and manipulate the data in the slice.
-	var todos []Models.Todo
+	var todos []models.todo
 	//Connect to a database & then close the connection when finished. The "Config" variable is assumed to be a configuration object that has a "ConnectToDB" method to create the database connection.
 	//Defer ensure that the database connection is closed when the function calling this code exits.
-	db := Config.ConnectToDB()
+	db := config.ConnectToDB()
 	defer db.Close()
 	//Query a database table called "todo".
 	//db.Query() func to query the table and stores the results in a variable called "row".
@@ -32,7 +32,7 @@ func GetTodos(c *gin.Context) {
 	//It does this by scanning each row and assigning the values to the ID, Title, and Description fields of the todo variable.
 	// If an error is encountered, the error is printed to the writer.
 	for row.Next() {
-		var todo Models.Todo
+		var todo models.todo
 		if err := row.Scan(&todo.ID, &todo.Title, &todo.Description); err != nil {
 			fmt.Fprint(c.Writer, err)
 			return
@@ -53,14 +53,14 @@ func GetTodos(c *gin.Context) {
 func CreateATodo(c *gin.Context) {
 	//The var "todo" is of type Models.Todo, which is a type defined in the Models package.
 	//This variable can be used to store data related to a Todo type, such as its title, description, and completion status.
-	var todo Models.Todo
+	var todo models.todo
 	decryptedData, exists := c.Get("decryptedText")
 	if !exists {
 		c.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
 		return
 	}
 	json.Unmarshal(decryptedData.([]byte), &todo)
-	db := Config.ConnectToDB()
+	db := config.ConnectToDB()
 	defer db.Close()
 	//Trying to add a new record to a database table called "todo".
 	//Query() func from the db package to execute an SQL query. The query is an INSERT statement that adds a new record to the todo table.
@@ -78,8 +78,8 @@ func GetATodo(c *gin.Context) {
 	//assign the value of the "id" parameter from the "c" object to a var called "id"."c" object is assumed to be an instance of a type that provides access to the "Params" object.
 	//The "Params" object is assumed to have a method called "ByName" which takes a parameter and returns the value of the corresponding parameter from the "c" object.
 	id := c.Params.ByName("id")
-	var todo Models.Todo
-	db := Config.ConnectToDB()
+	var todo models.todo
+	db := config.ConnectToDB()
 	defer db.Close()
 	row, err := db.Query("SELECT * FROM todo where ID=?", id)
 	if err != nil {
@@ -100,7 +100,7 @@ func GetATodo(c *gin.Context) {
 
 func UpdateATodo(c *gin.Context) {
 	id := c.Params.ByName("id")
-	var todo Models.Todo
+	var todo models.todo
 	decryptedData, exists := c.Get("decryptedText")
 	if !exists {
 		c.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
@@ -108,7 +108,7 @@ func UpdateATodo(c *gin.Context) {
 	}
 	json.Unmarshal(decryptedData.([]byte), &todo)
 	//c.BindJSON(&todo)
-	db := Config.ConnectToDB()
+	db := config.ConnectToDB()
 	defer db.Close()
 	_, err := db.Exec("update todo set Title=?, Description=? where ID=?", todo.Title, todo.Description, id)
 	if err != nil {
@@ -120,7 +120,7 @@ func UpdateATodo(c *gin.Context) {
 
 func DeleteATodo(c *gin.Context) {
 	id := c.Params.ByName("id")
-	db := Config.ConnectToDB()
+	db := config.ConnectToDB()
 	defer db.Close()
 	_, err := db.Exec("DELETE from todo where ID=?", id)
 	if err != nil {
