@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"go-todo-app/Config"
+	"go-todo-app/config"
 	"go-todo-app/Models"
 
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
-package Routes
+package routes
 
 import (
-	"go-todo-app/Controllers"
+	"go-todo-app/controllers"
 	middleware "go-todo-app/middlewares"
 
 	"github.com/gin-gonic/gin"

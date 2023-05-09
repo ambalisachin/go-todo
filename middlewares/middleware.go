@@ -3,7 +3,7 @@ package middleware
 import (
 	"encoding/base64"
 	"fmt"
-	"go-todo-app/Controllers"
+	"go-todo-app/controllers"
 
 	"github.com/gin-gonic/gin"
 )

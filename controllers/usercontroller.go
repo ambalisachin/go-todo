@@ -3,8 +3,8 @@ package Controllers
 import (
 	"encoding/json"
 	"errors"
-	"go-todo-app/Config"
-	models "go-todo-app/Models"
+	"go-todo-app/config"
+	models "go-todo-app/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

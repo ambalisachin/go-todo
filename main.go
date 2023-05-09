@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-todo-app/Config"
-	routes "go-todo-app/Routes"
+	"go-todo-app/config"
+	routes "go-todo-app/routes"
 
 	_ "github.com/go-sql-driver/mysql"
 )
