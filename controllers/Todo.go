@@ -13,40 +13,32 @@ import (
 )
 
 func GetTodos(c *gin.Context) {
-	//creates an empty slice of type Models.Todo. The variable todos is a pointer to the slice & can be used to reference and manipulate the data in the slice.
+	
 	var todos []models.Todo
-	//Connect to a database & then close the connection when finished. The "Config" variable is assumed to be a configuration object that has a "ConnectToDB" method to create the database connection.
-	//Defer ensure that the database connection is closed when the function calling this code exits.
+	
+	
 	db := config.ConnectToDB()
 	defer db.Close()
-	//Query a database table called "todo".
-	//db.Query() func to query the table and stores the results in a variable called "row".
-	//checks if an error occurred while querying the table. If an error occurred,
-	//the code will print the error message to the console and then return.
+	
+	
 	row, err := db.Query("SELECT * FROM todo")
 	if err != nil {
 		fmt.Fprint(c.Writer, err)
 		return
 	}
-	//Iterates over a collection of rows from a SQL query and stores each row into the "todo" variable which is of type Models.Todo.
-	//It does this by scanning each row and assigning the values to the ID, Title, and Description fields of the todo variable.
-	// If an error is encountered, the error is printed to the writer.
+	
 	for row.Next() {
 		var todo models.Todo
 		if err := row.Scan(&todo.ID, &todo.Title, &todo.Description); err != nil {
 			fmt.Fprint(c.Writer, err)
 			return
 		}
-		//Adds a "todo" item to the list of "todos".
-		//aappend func takes 2 arguments: the list of existing todos and the new todo item that is to be added to the list.
-		//Func then adds the new todo item to the end of the existing list and returns the new list.
+		
 		todos = append(todos, todo)
 	}
 	data, _ := json.Marshal(todos)
 	fmt.Println(data)
-	//Send an HTTP response with an array of "todos" as the body of the response,and
-	//a status code of 200 (OK). func c.JSON() is used to respond with JSON and the "todos" is the data which will be sent in the response body.
-	//The HTTP status code of 200 indicates that the request was successful.
+	
 	c.JSON(http.StatusOK, AESEncrypt(string(data), []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv")))
 }
 
