@@ -28,7 +28,7 @@ func GetTodos(c *gin.Context) {
 	}
 	
 	for row.Next() {
-		var todo models.todo
+		var todo models.Todo
 		if err := row.Scan(&todo.ID, &todo.Title, &todo.Description); err != nil {
 			fmt.Fprint(c.Writer, err)
 			return
