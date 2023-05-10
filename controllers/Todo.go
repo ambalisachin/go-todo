@@ -111,7 +111,7 @@ func UpdateATodo(c *gin.Context) {
 	c.JSON(http.StatusOK, AESEncrypt("Updated Successfully.......", []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv")))
 }
 
-//DeleteATodos function deletes a todo item from the todos table in a database using the given ID
+//DeleteATodo function deletes a todo item from the todos table in a database using the given ID
 func DeleteATodo(c *gin.Context) {
 	id := c.Params.ByName("id")
 	db := config.ConnectToDB()

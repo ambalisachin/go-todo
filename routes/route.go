@@ -8,7 +8,7 @@ import (
 )
 
 //var encryptedString string
-//func SetupRouter sets up a router using the gin web framework.
+//SetupRouter func  sets up a router using the gin web framework.
 func SetupRouter() *gin.Engine {
 	//	creates a router as 'r' & sets it to use the gin framework's default settings.
 	//This allows the router to use all of the default routes and middleware functions that are available in the gin framework.

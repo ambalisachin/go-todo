@@ -89,7 +89,7 @@ func AESEncrypt(src string, key []byte, IV string) []byte {
 
 }
 
-// Padding process is to add extra bytes to the end of the data
+// PKCS5Padding process is to add extra bytes to the end of the data
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	//Calculate the required padding size for a given ciphertext.
 	//The padding size is calculated by subtracting the length of the ciphertext from the blocksize,

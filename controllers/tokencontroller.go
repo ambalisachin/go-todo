@@ -17,7 +17,7 @@ var users = map[string]string{
 	"user1": "password1",
 	"user2": "password2",
 }
-
+//Credentials creates a struct with two fields, user and pass, which are both strings. A struct is a custom data type that can be used to store related data.
 type Credentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

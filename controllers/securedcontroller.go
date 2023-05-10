@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Func "Ping" that takes a pointer to a gin.Context as an argument. The func will perform some action on the gin.Context object, such as setting headers or sending a response.
+// Ping func that takes a pointer to a gin.Context as an argument. The func will perform some action on the gin.Context object, such as setting headers or sending a response.
 func Ping(c *gin.Context) {
 	//check if there is a token cookie in the context.If there is no token cookie, it returns a status code of 401 (Unauthorized).
 	//If there is an error in getting the cookie, it returns a status code of 400 (Bad Request).

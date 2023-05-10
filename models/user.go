@@ -5,13 +5,14 @@ import (
 	"gorm.io/gorm"
 	
 )
+//Todo struct  can be used to store information about a todo item.
 
 type Todo struct {
 	ID          uint   `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
-
+//User struct  can be used to store information about a user.
 type User struct {
 	gorm.Model
 	Name     string `json:"name"`
@@ -20,7 +21,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-// Compares the provided password with the hashed password stored in the user struct.
+// CheckPassword Compares the provided password with the hashed password stored in the user struct.
 // It uses the bcrypt library to compare the two passwords, returning an error if they do not match.
 // If the passwords match, it returns nil.
 func (user *User) CheckPassword(providedPassword string) error {
