@@ -23,12 +23,14 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-// This code creates a struct named Claims which contains a field named Username of type string and a field of type jwt.StandardClaims.
+// Claims struct which contains a field named Username of type string and a field of type jwt.StandardClaims.
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
+
+//Login function takes a username and password and checks if the credentials are valid. 
 func Login(c *gin.Context) {
 	// decode JSON data sent in an HTTP request.
 	// var "credentials" is of type "Credentials".json.NewDecoder() is used to create a new decoder object which will be used to decode the JSON data sent in the request.

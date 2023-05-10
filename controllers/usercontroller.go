@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//RegisterUser function that allows a user to register
 func RegisterUser(context *gin.Context) {
 	var user models.User
 	//retrieve the value stored in the "decryptedText" key in the context. If the key is present, it will assign the value stored in the key to the variable decryptedData &
