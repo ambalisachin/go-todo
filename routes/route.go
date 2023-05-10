@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//var encryptedString string
+
 //SetupRouter func  sets up a router using the gin web framework.
 func SetupRouter() *gin.Engine {
 	//	creates a router as 'r' & sets it to use the gin framework's default settings.
