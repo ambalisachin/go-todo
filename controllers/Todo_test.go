@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -14,7 +15,8 @@ import (
 )
 
 func TestGetTodos(t *testing.T) {
-	
+	// create a new gin context
+	//r := gin.Default()
 	req, err := http.NewRequest("GET", "/todos", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -70,7 +72,8 @@ func TestGetTodos(t *testing.T) {
 }
 
 func TestCreateATodo(t *testing.T) {
-	
+	// Create a new Gin router instance
+	//r := gin.Default()
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {
 		fmt.Println(err)
@@ -108,6 +111,7 @@ func TestCreateATodo(t *testing.T) {
 	assert.Equal(t, expected, actual)
 
 }
+
 func TestGetATodo(t *testing.T) {
 	// Create a new Gin router instance
 	r := gin.Default()
@@ -144,4 +148,118 @@ func TestGetATodo(t *testing.T) {
 	actual := w.Body.String()
 	assert.Equal(t, expected, actual)
 
+}
+
+func TestUpdateATodo(t *testing.T) {
+	// initialize Gin router
+	//r := gin.Default()
+	// set up test database
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+	// insert a test record into the database
+	_, err = db.Exec("insert into todo (ID, Title, Description) values (?, ?, ?)", 1, "Test Title", "Test Description")
+	if err != nil {
+		t.Fatalf("failed to insert test record: %v", err)
+	}
+
+	// create a mock HTTP request with a sample encrypted JSON payload
+	req, err := http.NewRequest("PUT", "/todo/1", bytes.NewBufferString(`{"Title":"Updated Title","Description":"Updated Description"}`))
+	if err != nil {
+		t.Fatalf("failed to create request: %v", err)
+	}
+	req.Header.Set("x-key", "sample-key")
+	req.Header.Set("x-iv", "sample-iv")
+	// set up mock HTTP response recorder
+	resp := httptest.NewRecorder()
+
+	// set up mock Gin context
+	c, _ := gin.CreateTestContext(resp)
+	c.Request = req
+	c.Params = []gin.Param{{Key: "id", Value: "1"}}
+	// simulate adding the decrypted data to the Gin context
+	c.Set("decryptedText", []byte(`{"Title":"Updated Title","Description":"Updated Description"}`))
+
+	// call the handler function
+	UpdateATodo(c)
+
+	// check the response status code
+	if resp.Code != http.StatusOK {
+		t.Errorf("expected status OK; got %v", resp.Code)
+	}
+
+	// check the response body
+	expected := `{"data":"VXBkYXRlZCBTdWNjZXNzZnVsLi4uLi4uLi4sLi4uLi4uLi4sLi4uLi4uLi4uLi4sLi4uLi4uLi4="}`
+	if resp.Body.String() != expected {
+		t.Errorf("expected body %v; got %v", expected, resp.Body.String())
+	}
+
+	// check that the record was updated in the database
+	var title, desc string
+	err = db.QueryRow("select Title, Description from todo where ID = ?", 1).Scan(&title, &desc)
+	if err != nil {
+		t.Fatalf("failed to query database: %v", err)
+	}
+	if title != "Updated Title" || desc != "Updated Description" {
+		t.Errorf("expected record to be updated; got Title=%v, Description=%v", title, desc)
+	}
+}
+func TestDeleteATodo(t *testing.T) {
+	// initialize Gin router
+	//router := gin.Default()
+	// set up test database
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	// insert a test record into the database
+	_, err = db.Exec("insert into todo (ID, Title, Description) values (?, ?, ?)", 1, "Test Title", "Test Description")
+	if err != nil {
+		t.Fatalf("failed to insert test record: %v", err)
+	}
+
+	// create a mock HTTP request
+	req, err := http.NewRequest("DELETE", "/todo/1", nil)
+	if err != nil {
+		t.Fatalf("failed to create request: %v", err)
+	}
+	req.Header.Set("x-key", "sample-key")
+	req.Header.Set("x-iv", "sample-iv")
+	// set up mock HTTP response recorder
+	resp := httptest.NewRecorder()
+
+	// set up mock Gin context
+	c, _ := gin.CreateTestContext(resp)
+	c.Request = req
+	c.Params = []gin.Param{{Key: "id", Value: "1"}}
+
+	// call the handler function
+	DeleteATodo(c)
+
+	// check the response status code
+	if resp.Code != http.StatusOK {
+		t.Errorf("expected status OK; got %v", resp.Code)
+	}
+
+	// check the response body
+	expected := `{"data":"UmVjb3JkIGRlbGV0ZWQgU3VjY2Vzc2Z1bC4uLi4uLi4uLi4sLi4uLi4uLi4uLi4uLi4uLi4sLi4uLi4uLi4="}`
+	if resp.Body.String() != expected {
+		t.Errorf("expected body %v; got %v", expected, resp.Body.String())
+	}
+
+	// check that the record was deleted from the database
+	var count int
+	err = db.QueryRow("select count(*) from todo where ID = ?", 1).Scan(&count)
+	if err != nil {
+		t.Fatalf("failed to query database: %v", err)
+	}
+	if count != 0 {
+		t.Errorf("expected record to be deleted; got count=%v", count)
+	}
 }
