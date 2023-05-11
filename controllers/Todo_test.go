@@ -3,7 +3,7 @@ package controllers
 import (
 	"bytes"
 	"database/sql"
-	"encoding/json"
+	
 	"fmt"
 	"go-todo-app/models"
 	"net/http"
