@@ -6,7 +6,6 @@ import (
 	
 )
 //Todo struct  can be used to store information about a todo item.
-
 type Todo struct {
 	ID          uint   `json:"id"`
 	Title       string `json:"title"`
