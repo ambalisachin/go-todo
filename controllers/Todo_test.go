@@ -56,7 +56,7 @@ func TestGetTodos(t *testing.T) {
 
 	// verify that the response contains the expected data
 	var todos []models.Todo
-	err = json.Unmarshal((rr.Body.String()), &todos)
+	err = json.Unmarshal((rr.Body.[]byte String()), &todos)
 	if err != nil {
 		t.Fatal(err)
 	}
