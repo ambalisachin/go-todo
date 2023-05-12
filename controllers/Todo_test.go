@@ -13,10 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
+)
 
 func TestCreateATodo(t *testing.T) {
-	// Create a new Gin router instance
-	//r := gin.Default()
+	
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {
 		fmt.Println(err)
