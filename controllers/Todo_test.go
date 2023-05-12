@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	
 	"fmt"
-	//"go-todo-app/models"
+	"go-todo-app/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -141,6 +141,56 @@ func TestUpdateATodo(t *testing.T) {
 	}
 	if title != "Updated Title" || desc != "Updated Description" {
 		t.Errorf("expected record to be updated; got Title=%v, Description=%v", title, desc)
+	}
+}
+func TestGetTodos(t *testing.T) {
+
+	req, err := http.NewRequest("GET", "/todos", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(rr)
+	ctx.Request = req
+
+	// connect to the test database
+
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer db.Close()
+
+	// create a new todo record in the database
+	_, err = db.Exec("INSERT INTO todo (title, description) VALUES (?, ?)", "Test Todo", "Test Description")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// call the GetTodos function
+	GetTodos(ctx)
+
+	// check the response
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected status OK; got %v", rr.Code)
+	}
+
+	// verify that the response contains the expected data
+	var todos []models.Todo
+	err = json.Unmarshal([]byte(rr.Body.String()), &todos)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(todos) != 1 {
+		t.Errorf("expected 1 todo; got %v", len(todos))
+	}
+	if todos[0].Title != "Test Todo" {
+		t.Errorf("expected todo title 'Test Todo'; got %v", todos[0].Title)
+	}
+	if todos[0].Description != "Test Description" {
+		t.Errorf("expected todo description 'Test Description'; got %v", todos[0].Description)
 	}
 }
 func TestDeleteATodo(t *testing.T) {
