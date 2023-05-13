@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// ConnectToDB connects to the database --> orders
+// ConnectToDB connects to the database 
 func ConnectToDB() *sql.DB {
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {

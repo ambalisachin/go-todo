@@ -3,7 +3,7 @@ package controllers
 import (
 	"bytes"
 	"database/sql"
-	
+
 	"fmt"
 
 	"net/http"
@@ -12,24 +12,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-
 )
 
 func TestCreateATodo(t *testing.T) {
-	
+
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	
+
 	defer db.Close()
 
-	// Create a test request with sample encrypted data
-	encryptedData := []byte(`{"ID": 1, "Title": "Test Title", "Description": "Test Description"}`)
+	// Create a test request with  encrypted data
+	encryptedData := []byte(`{"Title": "Test Title", "Description": "Test Description"}`)
 	req, err := http.NewRequest(http.MethodPost, "/todo", nil)
-	req.Header.Set("x-key", "sample-key")
-	req.Header.Set("x-iv", "sample-iv")
+	req.Header.Set("x-key", "noenonrgkgneroiw")
+	req.Header.Set("x-iv", "1461618689689168")
 	req.SetBasicAuth("username", "password")
 	if err != nil {
 		t.Fatal(err)
@@ -46,7 +45,7 @@ func TestCreateATodo(t *testing.T) {
 
 	// Assert that the response is a successful HTTP status and contains the expected message
 	assert.Equal(t, http.StatusCreated, w.Code)
-	expected := AESEncrypt("Todo created Successfully.....", []byte("sample-key"), "sample-iv")
+	expected := AESEncrypt("Todo created Successfully.....", []byte("noenonrgkgneroiw"), ("1461618689689168"))
 	actual := w.Body.String()
 	assert.Equal(t, expected, actual)
 
@@ -63,13 +62,13 @@ func TestGetATodo(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	
+
 	defer db.Close()
 
 	// Create a test request with a sample todo ID
 	req, err := http.NewRequest(http.MethodGet, "/todo/1", nil)
-	req.Header.Set("x-key", "sample-key")
-	req.Header.Set("x-iv", "sample-iv")
+	req.Header.Set("x-key", "noenonrgkgneroiw")
+	req.Header.Set("x-iv", "1461618689689168")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,15 +79,15 @@ func TestGetATodo(t *testing.T) {
 
 	// Assert that the response is a successful HTTP status and contains the expected todo data
 	assert.Equal(t, http.StatusOK, w.Code)
-	expectedData := `{"ID":1,"Title":"Test Title","Description":"Test Description"}`
-	expected := AESEncrypt(expectedData, []byte("sample-key"), "sample-iv")
+	expectedData := `{"Title":"Test Title","Description":"Test Description"}`
+	expected := AESEncrypt(expectedData, []byte("noenonrgkgneroiw"), ("1461618689689168"))
 	actual := w.Body.String()
 	assert.Equal(t, expected, actual)
 
 }
 
 func TestUpdateATodo(t *testing.T) {
-	
+
 	// set up test database
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {
@@ -97,7 +96,7 @@ func TestUpdateATodo(t *testing.T) {
 	}
 	defer db.Close()
 	// insert a test record into the database
-	_, err = db.Exec("insert into todo (ID, Title, Description) values (?, ?, ?)", 1, "Test Title", "Test Description")
+	_, err = db.Exec("insert into todo (Title, Description) values ( ?, ?)", "Test Title", "Test Description")
 	if err != nil {
 		t.Fatalf("failed to insert test record: %v", err)
 	}
@@ -107,8 +106,8 @@ func TestUpdateATodo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create request: %v", err)
 	}
-	req.Header.Set("x-key", "sample-key")
-	req.Header.Set("x-iv", "sample-iv")
+	req.Header.Set("x-key", "noenonrgkgneroiw")
+	req.Header.Set("x-iv", "1461618689689168")
 	// set up mock HTTP response recorder
 	resp := httptest.NewRecorder()
 
@@ -143,9 +142,8 @@ func TestUpdateATodo(t *testing.T) {
 		t.Errorf("expected record to be updated; got Title=%v, Description=%v", title, desc)
 	}
 }
-
 func TestDeleteATodo(t *testing.T) {
-	
+
 	// set up test database
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/sachindb")
 	if err != nil {
@@ -155,7 +153,7 @@ func TestDeleteATodo(t *testing.T) {
 	defer db.Close()
 
 	// insert a test record into the database
-	_, err = db.Exec("insert into todo (ID, Title, Description) values (?, ?, ?)", 1, "Test Title", "Test Description")
+	_, err = db.Exec("insert into todo (Title, Description) values (?, ?)", "Test Title", "Test Description")
 	if err != nil {
 		t.Fatalf("failed to insert test record: %v", err)
 	}
@@ -165,8 +163,8 @@ func TestDeleteATodo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create request: %v", err)
 	}
-	req.Header.Set("x-key", "sample-key")
-	req.Header.Set("x-iv", "sample-iv")
+	req.Header.Set("x-key", "noenonrgkgneroiw")
+	req.Header.Set("x-iv", "1461618689689168")
 	// set up mock HTTP response recorder
 	resp := httptest.NewRecorder()
 
