@@ -42,7 +42,7 @@ func TestCreateATodo(t *testing.T) {
 	CreateATodo(ctx)
 
 	// Assert that the response is a successful HTTP status and contains the expected message
-	//assert.Equal(t, http.StatusCreated, rr.Code)
+	assert.Equal(t, http.StatusCreated, rr.Code)
 	encrypted := AESEncrypt("Todo created Successfully.....", []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
 	actual := rr.Body.String()
 	expected,_ := json.Marshal(encrypted)
