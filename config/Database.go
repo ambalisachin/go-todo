@@ -13,7 +13,7 @@ type Credentials struct {
 	Server   string
 	Dbname   string
 }
-//var Database creates a variable called Database that is set to a Credentials struct.
+// Database creates a variable called Database that is set to a Credentials struct.
 var Database = Credentials{
 	Username: "root",
 	Password: "password",
