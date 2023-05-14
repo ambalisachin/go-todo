@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"go-todo-app/config"
-"error"
+
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -17,7 +17,7 @@ import (
 
 // TestCreateATodo is a unit test. It tests the functionality of creating a new todo item.
 func TestCreateATodo(t *testing.T) {
-	// Create a new Gin router instance
+
 	db := config.Database.ConnectToDB()
 
 	defer db.Close()
@@ -51,7 +51,7 @@ func TestCreateATodo(t *testing.T) {
 
 // TestGetTodos function is used for testing the "GetTodos" function, which is used to retrieve a list of todos
 func TestGetTodos(t *testing.T) {
-	// create a new gin context
+
 	req, err := http.NewRequest("GET", "/todos", nil)
 	req.Header.Set("x-key", "noenonrgkgneroiw")
 	req.Header.Set("x-iv", "1461618689689168")
@@ -120,7 +120,7 @@ func TestGetATodo(t *testing.T) {
 
 // TestUpdateATodo function is used for testing the "UpdateATodo" function, which is used to update a  todo
 func TestUpdateATodo(t *testing.T) {
-	// initialize Gin router
+	
 	db := config.Database.ConnectToDB()
 	defer db.Close()
 
