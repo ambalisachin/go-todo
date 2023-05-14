@@ -2,80 +2,75 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
-	"go-todo-app/config"
-	models "go-todo-app/models"
 	"net/http"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterUser function that allows a user to register
-func RegisterUser(context *gin.Context) {
-	var user models.User
-	//retrieve the value stored in the "decryptedText" key in the context. If the key is present, it will assign the value stored in the key to the variable decryptedData &
-	//set the boolean variable exists to true. If the key is not present, then decryptedData will be set to its zero value and exists will be set to false.
-	decryptedData, exists := context.Get("decryptedText")
-	if !exists {
-		context.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
-		return
-	}
-	//convert a decrypted data into a user object. The 1st argument is a byte array of decrypted data, and 2nd  argument is the address of the user object.
-	//The function will attempt to unmarshal the data into the user object.
-	json.Unmarshal(decryptedData.([]byte), &user)
-	//connect to db
-	db := config.Database.ConnectToDB()
-	defer db.Close()
-	//insert user data into table
-	_, err := db.Query("insert into users(Name, Username, Email, Password) values(?,?,?,?)", user.Name, user.Username, user.Email, user.Password)
-	if err != nil {
-		context.JSON(http.StatusBadRequest, err)
-		// context.Abort() func is used to abort the current context. This will stop the current context from continuing and
-		//will immediately return control to the caller. This is usually used when an error occurs or when a task needs to be terminated before it completes.
-		context.Abort()
-		return
-	}
-	//return a JSON response with an encrypted message. The message is encrypted using the AESEncrypt function, which takes a string, a byte array (x-key),& a string ( x-iv).
-	// The response status is set to "Created" (HTTP Status 201), indicating that the request was successful.
-	context.JSON(http.StatusCreated, AESEncrypt("Success........", []byte(context.Request.Header.Get("x-key")), context.Request.Header.Get("x-iv")))
+// logging and authorization
+var jwtKey = []byte("secret_key")
+
+// Store & access user information
+var users = map[string]string{
+	"user1": "password1",
+	"user2": "password2",
 }
-package controllers
 
-import (
-	"encoding/json"
-	"errors"
-	"go-todo-app/config"
-	models "go-todo-app/models"
-	"net/http"
+// Credentials creates a struct with two fields, user and pass, which are both strings. A struct is a custom data type that can be used to store related data.
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
-	"github.com/gin-gonic/gin"
-)
+// Claims struct which contains a field named Username of type string and a field of type jwt.StandardClaims.
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
 
-// RegisterUser function that allows a user to register
-func RegisterUser(context *gin.Context) {
-	var user models.User
-	//retrieve the value stored in the "decryptedText" key in the context. If the key is present, it will assign the value stored in the key to the variable decryptedData &
-	//set the boolean variable exists to true. If the key is not present, then decryptedData will be set to its zero value and exists will be set to false.
-	decryptedData, exists := context.Get("decryptedText")
-	if !exists {
-		context.AbortWithError(http.StatusBadRequest, errors.New("decrypted data not found"))
-		return
-	}
-	//convert a decrypted data into a user object. The 1st argument is a byte array of decrypted data, and 2nd  argument is the address of the user object.
-	//The function will attempt to unmarshal the data into the user object.
-	json.Unmarshal(decryptedData.([]byte), &user)
-	//connect to db
-	db := config.Database.ConnectToDB()
-	defer db.Close()
-	//insert user data into table
-	_, err := db.Query("insert into users(Name, Username, Email, Password) values(?,?,?,?)", user.Name, user.Username, user.Email, user.Password)
+// Login function takes a username and password and checks if the credentials are valid.
+func Login(c *gin.Context) {
+	// decode JSON data sent in an HTTP request.
+	// var "credentials" is of type "Credentials".json.NewDecoder() is used to create a new decoder object which will be used to decode the JSON data sent in the request.
+	//The decoded data is then stored in the "credentials" variable. If there is an error while decoding the data, the http status code "400" is sent to the client and the code execution is stopped.
+	var credentials Credentials
+	err := json.NewDecoder(c.Request.Body).Decode(&credentials)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, err)
-		// context.Abort() func is used to abort the current context. This will stop the current context from continuing and
-		//will immediately return control to the caller. This is usually used when an error occurs or when a task needs to be terminated before it completes.
-		context.Abort()
+		c.Writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	//return a JSON response with an encrypted message. The message is encrypted using the AESEncrypt function, which takes a string, a byte array (x-key),& a string ( x-iv).
-	// The response status is set to "Created" (HTTP Status 201), indicating that the request was successful.
-	context.JSON(http.StatusCreated, AESEncrypt("Success........", []byte(context.Request.Header.Get("x-key")), context.Request.Header.Get("x-iv")))
+
+	expectedPassword, ok := users[credentials.Username]
+
+	if !ok || expectedPassword != credentials.Password {
+		c.Writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	expirationTime := time.Now().Add(time.Minute * 5)
+
+	claims := &Claims{
+		Username: credentials.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+
+	if err != nil {
+		c.Writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.SetCookie(c.Writer,
+		&http.Cookie{
+			Name:    "token",
+			Value:   tokenString,
+			Expires: expirationTime,
+		})
+
 }
