@@ -193,7 +193,7 @@ func TestDeleteATodo(t *testing.T) {
 
 	encrypted := AESEncrypt("Record deleted Succesfully.......", []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv"))
 	expected, err := json.Marshal(encrypted)
-	assert.Equal(t, string(expected), resp.Body.String())
+	assert.Equal(t, string(expected), resp.Body.String(),err)
 
 	//check that the record was deleted from the database
 	var count int
