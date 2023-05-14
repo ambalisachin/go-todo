@@ -22,7 +22,6 @@ func DecryptRequest() gin.HandlerFunc {
 		//it takes a string representation of data that has been encrypted and decodes it into a byte array format.
 		//The requestBody variable is assumed to be a map containing the key "Encrypted-data" with a value that is a string.
 		// The DecodeString function is part of the Golang base64 package and it takes in a string and returns a byte array and an error.
-
 		encryptedData, _ := base64.StdEncoding.DecodeString(requestBody["Encrypted-data"])
 		//decrypt data that has been encrypted using AES encryption. The data which is encrypted is passed as 1st argument to the Controllers.
 		//AESDecrypt func & 2nd argument is a byte slice containing the encryption key, which has been retrieved from the request header with the "x-key" key.

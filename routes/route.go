@@ -2,18 +2,17 @@ package routes
 
 import (
 	"go-todo-app/controllers"
-	"go-todo-app/middlewares"
+	middleware "go-todo-app/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
-
-//SetupRouter func  sets up a router using the gin web framework.
+// SetupRouter func  sets up a router using the gin web framework.
 func SetupRouter() *gin.Engine {
 	//	creates a router as 'r' & sets it to use the gin framework's default settings.
 	//This allows the router to use all of the default routes and middleware functions that are available in the gin framework.
 	r := gin.Default()
-	//	creates a new router group named 'v1' which is associated with the URL path prefix '/v1'. This router group can be used to handle routes specific to the '/v1' prefix.
+	//creates a new router group named 'v1' which is associated with the URL path prefix '/v1'. This router group can be used to handle routes specific to the '/v1' prefix.
 	v1 := r.Group("/v1")
 	//creates a route group  called "v1". The route group is called "/add" and can contain routes that are related to adding something.
 	add := v1.Group("/add")

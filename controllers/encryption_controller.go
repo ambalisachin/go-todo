@@ -16,7 +16,7 @@ import (
 //IV         = "1461618689689168"(x-iv)
 //passphrase = "noenonrgkgneroiw"(x-key)
 
-//EncryptDataHandler function is a handler for a web request that encrypts data
+// EncryptDataHandler function is used to handle the encryption of data.
 func EncryptDataHandler(ctx *gin.Context) {
 	//declares a variable called "requestBody" with type "interface{}". An interface{} is a type that is used any type of data.
 	// This is useful as it allows the variable to store any type of data without needing to specify a specific type.
@@ -39,7 +39,8 @@ func EncryptDataHandler(ctx *gin.Context) {
 	//return an encrypted string as a JSON response.1st parameter is the HTTP status code(200 (OK))&2nd parameter is the encrypted string, which is returned in the response.
 	ctx.JSON(http.StatusOK, encryptedString)
 }
-//DecryptDataHandler function is a handler for a web request that decrypts data
+
+// DecryptDataHandler function uses  information to decrypt the data and return the decrypted data in the response.
 func DecryptDataHandler(ctx *gin.Context) {
 	//creates a variable called requestBody that is a map[string]string.the requestBody variable is a map  that has string keys and string values.
 	//This can be used to store request body data from an HTTP request.
@@ -58,7 +59,8 @@ func DecryptDataHandler(ctx *gin.Context) {
 	//The ctx is a context object which is used to send the response, the http.StatusOK is used to set the status code of the response and the string(decryptedText) is used to set the response body.
 	ctx.JSON(http.StatusOK, string(decryptedText))
 }
-//AESEncrypt used to encrypt a given source of bytes using the AES algorithm. 
+
+// AESEncrypt function in Golang which implements the AES encryption algorithm.
 func AESEncrypt(src string, key []byte, IV string) []byte {
 	// Create the AES cipher block key
 	block, err := aes.NewCipher(key)
@@ -89,7 +91,7 @@ func AESEncrypt(src string, key []byte, IV string) []byte {
 
 }
 
-// PKCS5Padding process is to add extra bytes to the end of the data
+// PKCS5Padding  process is to add extra bytes to the end of the data
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	//Calculate the required padding size for a given ciphertext.
 	//The padding size is calculated by subtracting the length of the ciphertext from the blocksize,
@@ -103,11 +105,11 @@ func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	//& returns the combined slice. i.e ciphertext & padtext slices will be combined and the combined slice will be return.
 	return append(ciphertext, padtext...)
 }
-//AESDecrypt is used to decrypt data using the AES algorithm. 
+
+// AESDecrypt decrypts data using the Advanced Encryption Standard (AES) algorithm.
 func AESDecrypt(crypt []byte, key []byte, IV string) []byte {
 	// Create the AES cipher block from key
 	block, err := aes.NewCipher(key)
-
 	if err != nil {
 		fmt.Println("key error1", err)
 	}

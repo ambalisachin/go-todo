@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"go-todo-app/config"
-	 "go-todo-app/models"
+	models "go-todo-app/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-//RegisterUser function that allows a user to register
+// RegisterUser function that allows a user to register
 func RegisterUser(context *gin.Context) {
 	var user models.User
 	//retrieve the value stored in the "decryptedText" key in the context. If the key is present, it will assign the value stored in the key to the variable decryptedData &
@@ -23,15 +23,13 @@ func RegisterUser(context *gin.Context) {
 	//convert a decrypted data into a user object. The 1st argument is a byte array of decrypted data, and 2nd  argument is the address of the user object.
 	//The function will attempt to unmarshal the data into the user object.
 	json.Unmarshal(decryptedData.([]byte), &user)
-
 	//connect to db
-	db := config.ConnectToDB()
+	db := config.Database.ConnectToDB()
 	defer db.Close()
 	//insert user data into table
 	_, err := db.Query("insert into users(Name, Username, Email, Password) values(?,?,?,?)", user.Name, user.Username, user.Email, user.Password)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, err)
-
 		// context.Abort() func is used to abort the current context. This will stop the current context from continuing and
 		//will immediately return control to the caller. This is usually used when an error occurs or when a task needs to be terminated before it completes.
 		context.Abort()

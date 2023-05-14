@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Ping func that takes a pointer to a gin.Context as an argument. The func will perform some action on the gin.Context object, such as setting headers or sending a response.
+// Ping Func that takes a pointer to a gin.Context as an argument. The func will perform some action on the gin.Context object, such as setting headers or sending a response.
 func Ping(c *gin.Context) {
 	//check if there is a token cookie in the context.If there is no token cookie, it returns a status code of 401 (Unauthorized).
 	//If there is an error in getting the cookie, it returns a status code of 400 (Bad Request).
@@ -39,7 +39,6 @@ func Ping(c *gin.Context) {
 	// it checks to see if the error is "jwt.ErrSignatureInvalid", which is a specific type of error.
 	//If it is, the code writes a status of "Unauthorized" to the response.
 	//Otherwise, the code writes a status of "Bad Request" to the response.
-
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			c.Writer.WriteHeader(http.StatusUnauthorized)
@@ -50,7 +49,6 @@ func Ping(c *gin.Context) {
 	}
 	//check if the token is valid & if it's not valid, it will return a status code of 401 (unauthorized) to client.
 	// If the token is valid, it will return a status code of 200 (OK) and a "pong" message.
-
 	if !tkn.Valid {
 		c.Writer.WriteHeader(http.StatusUnauthorized)
 		return

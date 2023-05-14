@@ -3,15 +3,16 @@ package models
 import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	
 )
-//Todo struct  can be used to store information about a todo item.
+
+// Todo struct  can be used to store information about a todo item.
 type Todo struct {
 	ID          uint   `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
-//User struct  can be used to store information about a user.
+
+// User struct  can be used to store information about a user.
 type User struct {
 	gorm.Model
 	Name     string `json:"name"`
