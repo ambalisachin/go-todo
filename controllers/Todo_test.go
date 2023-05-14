@@ -46,7 +46,7 @@ func TestCreateATodo(t *testing.T) {
 	encrypted := AESEncrypt("Todo created Successfully.....", []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
 	actual := rr.Body.String()
 	expected, err := json.Marshal(encrypted)
-	assert.Equal(t, string(expected), actual)
+	assert.Equal(t, string(expected), actual,err)
 }
 
 // TestGetTodos function is used for testing the "GetTodos" function, which is used to retrieve a list of todos
@@ -113,7 +113,7 @@ func TestGetATodo(t *testing.T) {
 	//encrypted := AESEncrypt("Todo created Successfully.....", []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
 	actual := rr.Body.String()
 	expected, err := json.Marshal(encrypted)
-	fmt.Println("........................", string(expected))
+	fmt.Println("........................", string(expected),err)
 	assert.Equal(t, string(expected), actual)
 
 }
@@ -152,7 +152,7 @@ func TestUpdateATodo(t *testing.T) {
 	// check the response body
 	encrypted := AESEncrypt("Updated Successfully.......", []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv"))
 	expected, err := json.Marshal(encrypted)
-	assert.Equal(t, string(expected), resp.Body.String())
+	assert.Equal(t, string(expected), resp.Body.String(),err)
 
 }
 
