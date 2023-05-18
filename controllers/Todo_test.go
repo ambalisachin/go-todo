@@ -17,14 +17,17 @@ import (
 
 // TestCreateATodo is a unit test. It tests the functionality of creating a new todo item.
 func TestCreateATodo(t *testing.T) {
-
+//connect to db
 	db := config.Database.ConnectToDB()
 
 	defer db.Close()
 	config.NewTable()
-	// Create a test request with sample encrypted data
+	
+	//Creating a variable called decryptedData and assigning it to an array of bytes containing a JSON string. 
 	decryptedData := []byte(`{"Title": "Test Title", "Description": "Test Description"}`)
+	//creates a http request with the method of POST 
 	req, err := http.NewRequest(http.MethodPost, "/todo", nil)
+	//Sets an HTTP header on the request object req. This header can be used to authenticate the request and ensure that it is coming from a trusted source.
 	req.Header.Set("x-key", "noenonrgkgneroiw")
 	req.Header.Set("x-iv", "1461618689689168")
 	//req.SetBasicAuth("username", "password")
@@ -51,8 +54,9 @@ func TestCreateATodo(t *testing.T) {
 
 // TestGetTodos function is used for testing the "GetTodos" function, which is used to retrieve a list of todos
 func TestGetTodos(t *testing.T) {
-
+	//creates a http request with the method of GET
 	req, err := http.NewRequest("GET", "/todos", nil)
+	//Sets an HTTP header on the request object req. This header can be used to authenticate the request and ensure that it is coming from a trusted source.
 	req.Header.Set("x-key", "noenonrgkgneroiw")
 	req.Header.Set("x-iv", "1461618689689168")
 	if err != nil {
@@ -81,6 +85,7 @@ func TestGetTodos(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Errorf("expected status OK; got %v", rr.Code)
 	}
+	//This code is used to test if the response (rr) is not nil. 
 	assert.NotNil(t, rr, "reponse is nil")
 }
 
