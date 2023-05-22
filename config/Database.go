@@ -15,8 +15,8 @@ type Credentials struct {
 }
 // Database creates a variable called Database that is set to a Credentials struct.
 var Database = Credentials{
-	Username: "root",
-	Password: "password",
+	Username: "kadamba",
+	Password: "Kadamba@123",
 	Server:   "tcp(localhost:3306)",
 	Dbname:   "sachindb",
 }
