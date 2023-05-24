@@ -7,7 +7,11 @@
 jobs:
 
   build:
+<<<<<<< HEAD
       name: Build
+=======
+      name: Post Build
+>>>>>>> 2478abd (Deploy yml changed)
       runs-on: ubuntu-latest
       steps:
       - name: executing remote ssh commands using password
