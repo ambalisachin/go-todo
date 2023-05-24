@@ -1,26 +1,35 @@
  name: Deploy App and Deploy
-        uses: ambalisachin/go-todo@v0.1.2
 
-        with:
-          host: ${{secrets.SSH_HOST}} # IP address of the server you wish to ssh into
-          key: ${{secrets.SSH_KEY}} # Private or public key of the server
-          username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
+ on:
+  push:
+    branches: [main]
 
-          script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh    
+jobs:
 
-            export GO_DIR=/usr/local/go
-            source /usr/local/go/bin/go
+  build:
+      name: Build
+      runs-on: ubuntu-latest
+      steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+          with:
+            host: ${{secrets.SSH_HOST}} # IP address of the server you wish to ssh into
+            key: ${{secrets.SSH_KEY}} # Private or public key of the server
+            username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
 
-            cd /root
-            cd go
-            cd deploying
+            script: |
+            
+              export GO_DIR=/usr/local/go
+              source /usr/local/go/bin/go
 
-            echo "Cloning Git Repo to /root/deploying"
-            git clone https://ambalisachin:${{secrets.GITHUB_TOKEN}}@github.com/ambalisachin/go-todo.git
+              cd /root
+              cd go
+              cd deploying
 
-            echo "Building Golang source"
-            cd go-tod
-            go build
+              echo "Cloning Git Repo to /root/deploying"
+              git clone https://ambalisachin:${{secrets.GITHUB_TOKEN}}@github.com/ambalisachin/go-todo.git
+
+              echo "Building Golang source"
+              cd go-tod
+              go build
 
