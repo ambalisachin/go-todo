@@ -1,4 +1,4 @@
-name: Deploy App and Deploy
+name:  Deploy
 
 on:
 push:
@@ -19,6 +19,10 @@ jobs:
 
             script: |
             
+<<<<<<< HEAD
+             
+              git clone https://ambalisachin:${{secrets.GITHUB_TOKEN}}@github.com/ambalisachin/go-todo.git
+=======
               export GO_DIR=/usr/local/go
               source /usr/local/go/bin/go
 
@@ -28,6 +32,7 @@ jobs:
 
               echo "Cloning Git Repo to /root/deploying"
               git clone https://ambalisachin:${{secrets.GIT_TOKEN}}@github.com/ambalisachin/go-todo.git
+>>>>>>> 9d7319c55942bb57c853b0bbc54d761faebaa4b4
 
               echo "Building Golang source"
               cd go-todo
