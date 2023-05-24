@@ -26,11 +26,8 @@ jobs:
               export GO_DIR=/usr/local/go
               source /usr/local/go/bin/go
 
-              cd /root
-              cd go
-              cd deploying
+             
 
-              echo "Cloning Git Repo to /root/deploying"
               git clone https://ambalisachin:${{secrets.GIT_TOKEN}}@github.com/ambalisachin/go-todo.git
 >>>>>>> 9d7319c55942bb57c853b0bbc54d761faebaa4b4
 
