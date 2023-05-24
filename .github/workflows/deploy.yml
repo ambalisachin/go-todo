@@ -1,17 +1,13 @@
- name: Deploy App and Deploy
+name: Deploy App and Deploy
 
- on:
-  push:
-    branches: [main]
+on:
+push:
+  branches: [main]
 
 jobs:
 
   build:
-<<<<<<< HEAD
-      name: Build
-=======
       name: Post Build
->>>>>>> 2478abd (Deploy yml changed)
       runs-on: ubuntu-latest
       steps:
       - name: executing remote ssh commands using password
@@ -31,7 +27,7 @@ jobs:
               cd deploying
 
               echo "Cloning Git Repo to /root/deploying"
-              git clone https://ambalisachin:${{secrets.GITHUB_TOKEN}}@github.com/ambalisachin/go-todo.git
+              git clone https://ambalisachin:${{secrets.GIT_TOKEN}}@github.com/ambalisachin/go-todo.git
 
               echo "Building Golang source"
               cd go-tod
