@@ -17,15 +17,15 @@ import (
 
 // TestCreateATodo is a unit test. It tests the functionality of creating a new todo item.
 func TestCreateATodo(t *testing.T) {
-//connect to db
+	//connect to db
 	db := config.Database.ConnectToDB()
 
 	defer db.Close()
 	config.NewTable()
-	
-	//Creating a variable called decryptedData and assigning it to an array of bytes containing a JSON string. 
+
+	//Creating a variable called decryptedData and assigning it to an array of bytes containing a JSON string.
 	decryptedData := []byte(`{"Title": "Test Title", "Description": "Test Description"}`)
-	//creates a http request with the method of POST 
+	//creates a http request with the method of POST
 	req, err := http.NewRequest(http.MethodPost, "/todo", nil)
 	//Sets an HTTP header on the request object req. This header can be used to authenticate the request and ensure that it is coming from a trusted source.
 	req.Header.Set("x-key", "noenonrgkgneroiw")
@@ -48,7 +48,7 @@ func TestCreateATodo(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, rr.Code)
 	encrypted := AESEncrypt("Todo created Successfully.....", []byte(ctx.Request.Header.Get("x-key")), ctx.Request.Header.Get("x-iv"))
 	actual := rr.Body.String()
-	expected,_ := json.Marshal(encrypted)
+	expected, _ := json.Marshal(encrypted)
 	assert.Equal(t, string(expected), actual)
 }
 
@@ -85,8 +85,46 @@ func TestGetTodos(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Errorf("expected status OK; got %v", rr.Code)
 	}
-	//This code is used to test if the response (rr) is not nil. 
+	//This code is used to test if the response (rr) is not nil.
 	assert.NotNil(t, rr, "reponse is nil")
+}
+
+// TestUpdateATodo function is used for testing the "UpdateATodo" function, which is used to update a  todo
+func TestUpdateATodo(t *testing.T) {
+
+	db := config.Database.ConnectToDB()
+	defer db.Close()
+
+	// create a mock HTTP request with a sample encrypted JSON payload
+	req, err := http.NewRequest(http.MethodPut, "/todo/2", bytes.NewBufferString(`{"title":"Updated Title","description":"Updated Description"}`))
+	if err != nil {
+		t.Fatalf("failed to create request: %v", err)
+	}
+	req.Header.Set("x-key", "noenonrgkgneroiw")
+	req.Header.Set("x-iv", "1461618689689168")
+	// set up mock HTTP response recorder
+	resp := httptest.NewRecorder()
+
+	// set up mock Gin context
+	c, _ := gin.CreateTestContext(resp)
+	c.Request = req
+	c.Params = []gin.Param{{Key: "id", Value: "2"}}
+	// simulate adding the decrypted data to the Gin context
+	c.Set("decryptedText", []byte(`{"title":"Updated Title","description":"Updated Description"}`))
+
+	// call the handler function
+	UpdateATodo(c)
+
+	// check the response status code
+	if resp.Code != http.StatusOK {
+		t.Errorf("expected status OK; got %v", resp.Code)
+	}
+
+	// check the response body
+	encrypted := AESEncrypt("Updated Successfully.......", []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv"))
+	expected, _ := json.Marshal(encrypted)
+	assert.Equal(t, string(expected), resp.Body.String())
+
 }
 
 // TestGetTodo function is used for testing the "GetTodo" function, which is used to retrieve a  todo
@@ -120,44 +158,6 @@ func TestGetATodo(t *testing.T) {
 	expected, _ := json.Marshal(encrypted)
 	fmt.Println("........................", string(expected))
 	assert.Equal(t, string(expected), actual)
-
-}
-
-// TestUpdateATodo function is used for testing the "UpdateATodo" function, which is used to update a  todo
-func TestUpdateATodo(t *testing.T) {
-	
-	db := config.Database.ConnectToDB()
-	defer db.Close()
-
-	// create a mock HTTP request with a sample encrypted JSON payload
-	req, err := http.NewRequest(http.MethodPut, "/todo/2", bytes.NewBufferString(`{"title":"Updated Title","description":"Updated Description"}`))
-	if err != nil {
-		t.Fatalf("failed to create request: %v", err)
-	}
-	req.Header.Set("x-key", "noenonrgkgneroiw")
-	req.Header.Set("x-iv", "1461618689689168")
-	// set up mock HTTP response recorder
-	resp := httptest.NewRecorder()
-
-	// set up mock Gin context
-	c, _ := gin.CreateTestContext(resp)
-	c.Request = req
-	c.Params = []gin.Param{{Key: "id", Value: "2"}}
-	// simulate adding the decrypted data to the Gin context
-	c.Set("decryptedText", []byte(`{"title":"Updated Title","description":"Updated Description"}`))
-
-	// call the handler function
-	UpdateATodo(c)
-
-	// check the response status code
-	if resp.Code != http.StatusOK {
-		t.Errorf("expected status OK; got %v", resp.Code)
-	}
-
-	// check the response body
-	encrypted := AESEncrypt("Updated Successfully.......", []byte(c.Request.Header.Get("x-key")), c.Request.Header.Get("x-iv"))
-	expected, _ := json.Marshal(encrypted)
-	assert.Equal(t, string(expected), resp.Body.String())
 
 }
 
