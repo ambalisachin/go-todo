@@ -30,6 +30,6 @@ jobs:
               git clone https://ambalisachin:${{secrets.GIT_TOKEN}}@github.com/ambalisachin/go-todo.git
 
               echo "Building Golang source"
-              cd go-tod
+              cd go-todo
               go build
 
